@@ -17,24 +17,33 @@
             --accent: #f5576c;
             --text-dark: #2d3748;
             --text-light: #718096;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
             --shadow-glow: 0 0 30px rgba(102, 126, 234, 0.4);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
             font-family: 'Poppins', sans-serif;
-            /* UPDATED: Softer, slower gradient animation */
             background: linear-gradient(-45deg, #667eea, #764ba2, #d299c2, #a8edea);
             background-size: 400% 400%;
             animation: gradientShift 40s ease infinite;
             color: var(--text-dark);
         }
-        /* UPDATED: Slower animation speed */
-        @keyframes gradientShift { 
-            0% { background-position: 0% 50%; } 
-            50% { background-position: 100% 50%; } 
-            100% { background-position: 0% 50%; } 
-        }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .floating-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .shape, .drop { position: absolute; background: rgba(255, 255, 255, 0.1); border-radius: 50%; }
+        .shape { animation: float 25s infinite ease-in-out; }
+        .shape:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-duration: 20s; }
+        .shape:nth-child(2) { width: 120px; height: 120px; top: 70%; right: 10%; animation-duration: 25s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 80px); } }
+        .drop { animation: drop 15s infinite linear; }
+        @keyframes drop { from { top: -10%; opacity: 0.5; } to { top: 110%; opacity: 0.2; } }
+        .drop:nth-of-type(3) { width: 20px; height: 20px; left: 15%; animation-duration: 12s; animation-delay: 2s; }
+        .drop:nth-of-type(4) { width: 30px; height: 30px; left: 40%; animation-duration: 18s; animation-delay: 0s; }
+        .drop:nth-of-type(5) { width: 15px; height: 15px; left: 70%; animation-duration: 10s; animation-delay: 5s; }
+        .drop:nth-of-type(6) { width: 25px; height: 25px; left: 85%; animation-duration: 16s; animation-delay: 1s; }
         .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; z-index: 1; position: relative; }
         .header { text-align: center; margin-bottom: 50px; color: white; }
         .header h1 { font-size: 2.8rem; text-shadow: 2px 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; gap: 15px; }
@@ -84,6 +93,7 @@
         .btn:disabled { cursor: not-allowed; opacity: 0.7; }
         .btn-primary { background: var(--gradient-primary); color: white; }
         .btn-heart { background: var(--gradient-heart); color: white; }
+        .btn-secondary { background: #64748b; color: white; }
         .btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
         .output-section { margin-top: 50px; padding: 40px; background: rgba(255,255,255,0.98); border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); display: none; }
         .output-section.show { display: block; animation: fadeIn 0.5s ease-out; }
@@ -130,43 +140,32 @@
         .mini-card-title { font-weight: 600; font-size: 1rem; color: var(--text-dark); }
         .status-message { padding: 15px 20px; border-radius: 15px; margin-top: 20px; display: none; align-items: center; gap: 12px; }
         .status-message.show { display: flex; animation: fadeIn 0.5s; }
-        .status-message.success { background: #e6f9f3; border-left: 5px solid #10b981; color: #059669; }
-        .status-message.error { background: #fee2e2; border-left: 5px solid #ef4444; color: #dc2626; }
-
-        /* NEW: Floating shapes container */
-        .floating-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .shape, .drop { position: absolute; background: rgba(255, 255, 255, 0.1); border-radius: 50%; }
-        .shape { animation: float 25s infinite ease-in-out; }
-        .shape:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-duration: 20s; }
-        .shape:nth-child(2) { width: 120px; height: 120px; top: 70%; right: 10%; animation-duration: 25s; }
-        .shape:nth-child(3) { width: 60px; height: 60px; bottom: 20%; left: 30%; animation-duration: 30s; }
-        .shape:nth-child(4) { width: 100px; height: 100px; top: 40%; right: 40%; animation-duration: 18s; }
-        @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 80px); } }
-
-        /* NEW: Drop animation */
-        .drop { animation: drop 15s infinite linear; }
-        @keyframes drop { from { top: -10%; transform: translateY(0); opacity: 0.5; } to { top: 110%; transform: translateY(0); opacity: 0.2; } }
-        .drop:nth-of-type(5) { width: 20px; height: 20px; left: 15%; animation-duration: 12s; animation-delay: 2s; }
-        .drop:nth-of-type(6) { width: 30px; height: 30px; left: 40%; animation-duration: 18s; animation-delay: 0s; }
-        .drop:nth-of-type(7) { width: 15px; height: 15px; left: 70%; animation-duration: 10s; animation-delay: 5s; }
-        .drop:nth-of-type(8) { width: 25px; height: 25px; left: 85%; animation-duration: 16s; animation-delay: 1s; }
-        .drop:nth-of-type(9) { width: 18px; height: 18px; left: 5%; animation-duration: 14s; animation-delay: 6s; }
-        .drop:nth-of-type(10) { width: 22px; height: 22px; left: 55%; animation-duration: 20s; animation-delay: 3s; }
-
+        .status-message.success { background: #e6f9f3; border-left: 5px solid var(--success-color); color: #059669; }
+        .status-message.error { background: #fee2e2; border-left: 5px solid var(--error-color); color: #dc2626; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease-in-out; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-content { background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 90%; max-width: 600px; padding: 30px; transform: translateY(20px) scale(0.95); transition: transform 0.3s ease-out; }
+        .modal-overlay.show .modal-content { transform: translateY(0) scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .modal-header h3 { font-size: 1.5rem; color: var(--text-dark); }
+        .modal-close { background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--text-light); }
+        .modal-body { max-height: 60vh; overflow-y: auto; padding-right: 15px; }
+        .validation-item { display: flex; align-items: flex-start; gap: 15px; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+        .validation-item .material-icons { margin-top: 2px; }
+        .validation-item.success { background: #f0fdf4; color: var(--success-color); }
+        .validation-item.warning { background: #fffbeb; color: var(--warning-color); }
+        .validation-item.error { background: #fef2f2; color: var(--error-color); }
         .mt-4 { margin-top: 25px; } .mt-5 { margin-top: 40px; } .text-center { text-align: center; }
         @media (max-width: 768px) { .header h1 { font-size: 2rem; } .form-card { padding: 25px; } .option-cards, .quick-start-container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="floating-shapes">
-        <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
-        <div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div>
+        <div class="shape"></div><div class="shape"></div>
+        <div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div>
     </div>
     <div class="container">
-        <header class="header">
-            <h1><span class="material-icons">favorite</span>Charity Bid Prompt Assistant</h1>
-            <p>Create powerful prompts. Find supporting data. Analyse your impact.</p>
-        </header>
+        <header class="header"><h1><span class="material-icons">favorite</span>Charity Bid Prompt Assistant</h1><p>Create powerful prompts. Find supporting data. Analyse your impact.</p></header>
         <div class="progress-steps"><div class="progress-step active" data-step="1"><div class="progress-step-circle"><span class="material-icons">business</span></div><span class="progress-step-label">Organisation</span></div><div class="progress-step" data-step="2"><div class="progress-step-circle"><span class="material-icons">category</span></div><span class="progress-step-label">Goal</span></div><div class="progress-step" data-step="3"><div class="progress-step-circle"><span class="material-icons">build</span></div><span class="progress-step-label">Details</span></div><div class="progress-step" data-step="4"><div class="progress-step-circle"><span class="material-icons">auto_awesome</span></div><span class="progress-step-label">Generate</span></div></div>
         <div class="form-card">
             <form id="charityForm" onsubmit="return false;">
@@ -187,25 +186,36 @@
         <div id="outputSection" class="output-section">
             <div id="llmResponseContainer" style="display: none;"><div class="output-header"><span class="material-icons">psychology</span><h3>Live Response from Workflow</h3></div><div class="loading-indicator"><div class="loading-dots"><div></div><div></div><div></div></div><p style="margin-top: 15px;">Waiting for response from workflow...</p></div><div id="llmResponseDisplay"></div></div>
             <div class="prompt-display-wrapper"><div class="output-header"><span class="material-icons">description</span><h3>Your Generated Prompt (Reference)</h3></div><div style="position: relative;"><pre id="promptDisplay" class="prompt-display"></pre><button id="copyBtn" class="copy-btn"><span class="material-icons">content_copy</span> Copy</button></div></div>
-            <div class="text-center" style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;"><button type="button" id="resetBtn" class="btn btn-heart"><span class="material-icons">refresh</span>Start Over</button></div>
+            <div class="text-center" style="margin-top: 25px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;"><button type="button" id="importBtn" class="btn btn-secondary"><span class="material-icons">upload_file</span>Import JSON</button><button type="button" id="exportJsonBtn" class="btn btn-secondary"><span class="material-icons">download</span>Export JSON</button><button type="button" id="exportCsvBtn" class="btn btn-secondary"><span class="material-icons">grid_on</span>Export CSV</button><button type="button" id="resetBtn" class="btn btn-heart"><span class="material-icons">refresh</span>Start Over</button></div>
             <div class="accordion-item"><button type="button" class="accordion-button"><span class="material-icons">expand_more</span>Important: Using Your Prompt Responsibly</button><div class="accordion-content"><div class="accordion-body"><p><strong>Think of this as a starting point, not a final answer.</strong> LLMs are powerful but require critical oversight.</p><ul><li><strong>Verify All Factual Claims:</strong> LLMs can "hallucinate" or invent data. Always cross-reference facts with trusted sources before including them in a bid.</li><li><strong>Iterate and Refine:</strong> Your first response is rarely the best. Ask follow-up questions to refine the output.</li><li><strong>You Are the Expert:</strong> Add your authentic voice and specific case studies. Ensure the final text reflects your organisation's values.</li></ul><p><strong>Recommended LLMs:</strong> <a href="https://gemini.google.com/" target="_blank" rel="noopener">Google Gemini</a>, <a href="https://chat.openai.com/" target="_blank" rel="noopener">OpenAI ChatGPT</a>, <a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Anthropic Claude</a>.</p></div></div></div>
         </div>
     </div>
+    <div id="validationModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Import Validation Report</h3><button id="modalCloseBtn" class="modal-close">&times;</button></div><div id="validationBody" class="modal-body"></div></div></div>
     <template id="template-create-story"><div class="section-header"><span class="material-icons">create</span><h2>Story Details</h2><span class="section-badge">Step 3</span></div><div class="form-group"><label class="form-label" for="keyFinding"><span class="material-icons">insights</span>Key Finding or Statistic</label><div class="input-wrapper"><span class="material-icons input-icon">trending_up</span><input type="text" class="form-control" id="keyFinding" placeholder="e.g., Youth unemployment rose 15% in our area last year" required></div></div><div class="form-group"><label class="form-label" for="solution"><span class="material-icons">lightbulb</span>Proposed Project or Solution</label><div class="input-wrapper"><span class="material-icons input-icon">build_circle</span><input type="text" class="form-control" id="solution" placeholder="e.g., A 12-week digital skills programme for 50 local youths" required></div></div><div class="form-group"><label class="form-label"><span class="material-icons">people</span>Target Funder</label><div class="multi-select-group" data-group="audience"><button type="button" class="select-btn" data-value="Local Council"><span class="material-icons">account_balance</span>Local Council</button><button type="button" class="select-btn" data-value="Community Foundation"><span class="material-icons">foundation</span>Community Foundation</button><button type="button" class="select-btn" data-value="Corporate Sponsor"><span class="material-icons">business</span>Corporate Sponsor</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom funder..."><button type="button" class="btn-add-option">Add</button></div></div></div></template>
     <template id="template-find-data"><div class="section-header"><span class="material-icons">search</span><h2>Data Search Criteria</h2><span class="section-badge">Step 3</span></div><div class="form-group"><label class="form-label" for="cause"><span class="material-icons">favorite</span>Your Cause or Mission</label><div class="input-wrapper"><span class="material-icons input-icon">flag</span><input type="text" class="form-control" id="cause" placeholder="e.g., Reducing youth unemployment" required></div></div><div class="form-group"><label class="form-label" for="area"><span class="material-icons">location_on</span>Geographic Area</label><div class="input-wrapper"><span class="material-icons input-icon">map</span><input type="text" class="form-control" id="area" placeholder="e.g., Burnley, Lancashire" required></div></div><div class="form-group"><label class="form-label"><span class="material-icons">storage</span>Types of Data Needed</label><div class="multi-select-group" data-group="dataTypes"><button type="button" class="select-btn" data-value="Demographics"><span class="material-icons">group</span>Demographics</button><button type="button" class="select-btn" data-value="Economic"><span class="material-icons">trending_up</span>Economic</button><button type="button" class="select-btn" data-value="Health"><span class="material-icons">health_and_safety</span>Health</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom data type..."><button type="button" class="btn-add-option">Add</button></div></div></div></template>
     <template id="template-validate-data"><div class="section-header"><span class="material-icons">fact_check</span><h2>Data Analysis Goals</h2><span class="section-badge">Step 3</span></div><div class="form-group"><label class="form-label" for="dataSource"><span class="material-icons">description</span>Describe Your Data Source</label><div class="input-wrapper"><span class="material-icons input-icon">source</span><textarea class="form-control" id="dataSource" placeholder="e.g., An Excel sheet of our service users from the last 2 years" required></textarea></div></div><div class="form-group"><label class="form-label"><span class="material-icons">checklist</span>What to Achieve</label><div class="multi-select-group" data-group="validationGoals"><button type="button" class="select-btn" data-value="Identify Trends"><span class="material-icons">show_chart</span>Identify Trends</button><button type="button" class="select-btn" data-value="Find Correlations"><span class="material-icons">scatter_plot</span>Find Correlations</button><button type="button" class="select-btn" data-value="Validate Assumptions"><span class="material-icons">verified</span>Validate Assumptions</button><button type="button" class="select-btn" data-value="Understand User Demographics"><span class="material-icons">pie_chart</span>Understand User Demographics</button><button type="button" class="select-btn" data-value="Measure Project Impact"><span class="material-icons">flag</span>Measure Project Impact</button><button type="button" class="select-btn" data-value="Forecast Future Need"><span class="material-icons">trending_up</span>Forecast Future Need</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom goal..."><button type="button" class="btn-add-option">Add</button></div></div></div></template>
 
     <script>
+    // --- SCRIPT START ---
     document.addEventListener('DOMContentLoaded', () => {
+
+        // --- DATA STORE: QUICK START TEMPLATES ---
         const quickStartTemplates = [
             { icon: 'child_care', title: 'Youth Services', data: { charityName: 'Burnley Youth Zone', charityType: 'cic', description: 'We provide a safe and engaging space for young people aged 13-19, offering skills training and positive activities.', website: 'https://burnleyyouth.org.uk', ageGroups: ['Teenagers (13-17)', 'Young Adults (18-25)'], benefits: ['Skill Development', 'Community Connection', 'Gaining Employment'], 'create-story': { keyFinding: '1 in 5 young people in our area are not in education, employment or training (NEET).', solution: 'Launch a 12-week digital skills and employability programme for 50 local youths.', audience: ['Local Council', 'Community Foundation'] }, 'find-data': { cause: 'Youth unemployment and skills gap', area: 'Burnley, Lancashire', dataTypes: ['Demographics', 'Economic'] }, 'validate-data': { dataSource: 'Local council report on youth employment figures from last year.', validationGoals: ['Identify Trends', 'Validate Assumptions'] }}},
             { icon: 'food_bank', title: 'Food Bank', data: { charityName: 'The Community Pantry Project', charityType: 'registered-charity', description: 'We provide emergency food parcels and support to individuals and families facing financial hardship in our community.', website: '', ageGroups: ['Children (5-12)', 'Adults (26-64)'], benefits: ['Financial Stability', 'Improved Health', 'Increased Wellbeing'], 'create-story': { keyFinding: 'Use of our food bank has increased by 40% in the last 12 months, with families being the largest group.', solution: 'Secure funding to increase our stock capacity and extend opening hours to weekends.', audience: ['Community Foundation', 'Corporate Sponsor'] }, 'find-data': { cause: 'Food poverty and cost of living crisis', area: 'East Lancashire', dataTypes: ['Economic', 'Health'] }, 'validate-data': { dataSource: 'Our internal service user records (Excel spreadsheet) from the past two years.', validationGoals: ['Identify Trends', 'Find Correlations'] }}},
             { icon: 'elderly', title: 'Elderly Support', data: { charityName: 'Burnley Befrienders', charityType: 'voluntary-organisation', description: 'Our organisation combats loneliness and social isolation among older residents through volunteer befriending and social events.', website: 'https://burnleybefrienders.co.uk', ageGroups: ['Seniors (65+)'], benefits: ['Community Connection', 'Increased Wellbeing', 'Improved Health'], 'create-story': { keyFinding: 'Over 30% of over-75s in our town report feeling lonely often or always, according to local surveys.', solution: 'Expand our befriending service to match 100 isolated seniors with weekly volunteers.', audience: ['Community Foundation', 'The National Lottery Community Fund'] }, 'find-data': { cause: 'Social isolation among the elderly', area: 'Burnley Town Centre', dataTypes: ['Demographics', 'Health'] }, 'validate-data': { dataSource: 'Feedback forms and attendance logs from our weekly coffee morning events.', validationGoals: ['Identify Trends', 'Measure Project Impact'] }}},
             { icon: 'eco', title: 'Environment', data: { charityName: 'Pennine Green Futures', charityType: 'social-enterprise', description: 'We empower local communities to take action on climate change through educational workshops and practical greening projects.', website: 'https://penninegreen.org.uk', ageGroups: ['Children (5-12)', 'Adults (26-64)'], benefits: ['Skill Development', 'Community Connection'], 'create-story': { keyFinding: 'Our town has 20% less public green space per capita than the national average.', solution: 'Transform a disused 2-acre plot into a community garden and biodiversity hub.', audience: ['Local Council', 'Corporate Sponsor'] }, 'find-data': { cause: 'Urban green space and biodiversity', area: 'Burnley and Pendle', dataTypes: ['Health', 'Environment'] }, 'validate-data': { dataSource: 'DEFRA open data on air quality monitoring stations in our postcode.', validationGoals: ['Identify Trends', 'Forecast Future Need'] }}},
             { icon: 'palette', title: 'Community Arts', data: { charityName: 'Weavers Triangle Arts', charityType: 'cic', description: 'We make art accessible to everyone by providing free creative workshops and cultural events in underserved neighbourhoods.', website: 'https://weaverstrianglearts.co.uk', ageGroups: ['Children (5-12)', 'Seniors (65+)'], benefits: ['Increased Wellbeing', 'Community Connection', 'Skill Development'], 'create-story': { keyFinding: 'Our town has fewer free cultural activities for families than any other borough in Lancashire.', solution: 'Run a series of 10 free weekend art workshops in public spaces, culminating in a community exhibition.', audience: ['Arts Council', 'Corporate Sponsor'] }, 'find-data': { cause: 'Access to arts and culture for low-income families', area: 'Burnley', dataTypes: ['Demographics', 'Cultural participation stats'] }, 'validate-data': { dataSource: 'Visitor numbers and postcode data from our previous ticketed events.', validationGoals: ['Understand User Demographics', 'Identify Trends'] }}},
-            { icon: 'accessible', title: 'Disability Access', data: { charityName: 'Access for All Lancs', charityType: 'registered-charity', description: 'We campaign for and provide resources to improve accessibility for disabled people across Lancashire.', website: 'https://accesslanc.org.uk', ageGroups: ['Adults (26-64)', 'Seniors (65+)'], benefits: ['Community Connection', 'Increased Wellbeing'], 'create-story': { keyFinding: 'An audit of 50 local shops and cafes found only 15% were fully wheelchair accessible.', solution: 'Launch an awareness campaign and provide grants of up to £500 for small businesses to install ramps and accessible toilets.', audience: ['Local Council', 'Disability charities'] }, 'find-data': { cause: 'Physical accessibility in public spaces for disabled people', area: 'Lancashire', dataTypes: ['Demographics', 'Business listings'] }, 'validate-data': { dataSource: 'A survey of 100 local disabled residents about barriers they face.', validationGoals: ['Find Correlations', 'Validate Assumptions'] }}}
+            { icon: 'accessible', title: 'Disability Access', data: { charityName: 'Access for All Lancs', charityType: 'registered-charity', description: 'We campaign for and provide resources to improve accessibility for disabled people across Lancashire.', website: 'https://accesslanc.org.uk', ageGroups: ['Adults (26-64)', 'Seniors (65+)'], benefits: ['Community Connection', 'Increased Wellbeing'], 'create-story': { keyFinding: 'An audit of 50 local shops and cafes found only 15% were fully wheelchair accessible.', solution: 'Launch an awareness campaign and provide grants of up to £500 for small businesses to install ramps and accessible toilets.', audience: ['Local Council', 'Disability charities'] }, 'find-data': { cause: 'Physical accessibility in public spaces for disabled people', area: 'Lancashire', dataTypes: ['Demographics', 'Business listings'] }, 'validate-data': { dataSource: 'A survey of 100 local disabled residents about barriers they face.', validationGoals: ['Find Correlations', 'Validate Assumptions'] }}},
+            { icon: 'health_and_safety', title: 'Mental Health', data: { charityName: 'Mindful Lancashire', charityType: 'registered-charity', description: 'We offer accessible mental health support and wellbeing workshops for young adults struggling with anxiety and depression.', website: 'https://mindfullancs.org.uk', ageGroups: ['Young Adults (18-25)'], benefits: ['Increased Wellbeing', 'Improved Health'], 'create-story': { keyFinding: 'NHS Digital data shows a 50% rise in referrals for anxiety among 18-25s in our area post-pandemic.', solution: 'Establish a free, weekly drop-in peer support group for up to 30 young adults.', audience: ['Community Foundation', 'Local Council'] }, 'find-data': { cause: 'Young adult mental health services', area: 'Lancashire', dataTypes: ['Health', 'Demographics'] }, 'validate-data': { dataSource: 'Anonymous feedback forms from our online pilot support group.', validationGoals: ['Measure Project Impact', 'Understand User Demographics'] }}},
+            { icon: 'pets', title: 'Animal Welfare', data: { charityName: 'Pendle Animal Rescue', charityType: 'voluntary-organisation', description: 'We rescue, rehabilitate, and rehome abandoned and neglected animals in the Pendle area.', website: '', ageGroups: [], benefits: ['Increased Wellbeing'], 'create-story': { keyFinding: 'Our rescue is at 150% capacity, with a 30% increase in abandoned pets this year due to the cost of living crisis.', solution: "Fund a 'Keep Your Pet' programme providing subsidised vet care and food for 100 low-income pet owners.", audience: ['Community Foundation', 'Corporate Sponsor'] }, 'find-data': { cause: 'Animal abandonment and cost of living', area: 'Pendle, Lancashire', dataTypes: ['Economic'] }, 'validate-data': { dataSource: 'Our shelter intake records from the past 5 years, showing breed, age, and reason for surrender.', validationGoals: ['Identify Trends', 'Forecast Future Need'] }}},
+            { icon: 'sports_soccer', title: 'Community Sports', data: { charityName: 'Burnley Junior FC', charityType: 'cic', description: 'We provide affordable and inclusive football coaching for children of all backgrounds, promoting teamwork and healthy lifestyles.', website: '', ageGroups: ['Children (5-12)'], benefits: ['Improved Health', 'Community Connection', 'Skill Development'], 'create-story': { keyFinding: "Childhood obesity rates in our club's postcodes are 10% higher than the national average.", solution: "Launch a free 'Kickstart Health' after-school football and nutrition programme for 100 children.", audience: ['Local Council', 'Sport England'] }, 'find-data': { cause: 'Childhood obesity and access to sport', area: 'Burnley', dataTypes: ['Health', 'Demographics'] }, 'validate-data': { dataSource: 'Club registration data and attendance records from the last three seasons.', validationGoals: ['Understand User Demographics', 'Identify Trends'] }}}
         ];
+        
+        // --- APPLICATION STATE ---
         const appState = { currentStep: 1, selectedGoal: null, formData: {}, prepopulatedData: null };
+
+        // --- DOM ELEMENT SELECTORS ---
         const quickStartContainer = document.getElementById('quickStartContainer');
         const form = document.getElementById('charityForm');
         const dynamicSection = document.getElementById('dynamicSection');
@@ -213,54 +223,49 @@
         const generateBtn = document.getElementById('generateBtn');
         const copyBtn = document.getElementById('copyBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const importBtn = document.getElementById('importBtn');
+        const exportJsonBtn = document.getElementById('exportJsonBtn');
+        const exportCsvBtn = document.getElementById('exportCsvBtn');
         const statusMessageEl = document.getElementById('statusMessage');
         const promptDisplay = document.getElementById('promptDisplay');
         const llmResponseContainer = document.getElementById('llmResponseContainer');
         const llmResponseDisplay = document.getElementById('llmResponseDisplay');
+        const validationModal = document.getElementById('validationModal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const validationBody = document.getElementById('validationBody');
 
+        // --- INITIALIZATION ---
+        renderMiniCards();
+
+        // --- EVENT LISTENERS ---
         document.getElementById('toggleOptionalDetails').addEventListener('change', function() { document.getElementById('optionalDetailsContainer').classList.toggle('show', this.checked); });
         document.body.addEventListener('click', handleDelegatedClicks);
         generateBtn.addEventListener('click', handleGenerateAndRun);
         copyBtn.addEventListener('click', copyPrompt);
         resetBtn.addEventListener('click', () => { if (confirm('Are you sure you want to start over?')) resetApp(); });
-
-        renderMiniCards();
-
-        function handleDelegatedClicks(e) {
-            const el = e.target;
-            if (el.classList.contains('select-btn')) el.classList.toggle('active');
-            if (el.closest('.mini-card')) applyTemplate(parseInt(el.closest('.mini-card').dataset.index, 10));
-            if (el.closest('.option-card')) handleGoalSelection(el.closest('.option-card'));
-            if (el.closest('.accordion-button')) toggleAccordion(el.closest('.accordion-button'));
-            if (el.classList.contains('select-btn-other')) { const wrapper = el.nextElementSibling; if(wrapper) wrapper.style.display = wrapper.style.display === 'none' ? 'flex' : 'none'; }
-            if (el.classList.contains('btn-add-option')) {
-                const wrapper = el.parentElement;
-                const input = wrapper.querySelector('input');
-                if (input && input.value.trim()) {
-                    const group = wrapper.parentElement;
-                    const newBtn = document.createElement('button');
-                    newBtn.type = 'button'; newBtn.className = 'select-btn active custom-option';
-                    newBtn.dataset.value = input.value.trim();
-                    newBtn.innerHTML = `<span class="material-icons">push_pin</span> ${input.value.trim()}`;
-                    group.insertBefore(newBtn, group.querySelector('.select-btn-other'));
-                    input.value = '';
-                }
-            }
-        }
+        // FIX: Added event listeners for import/export buttons
+        importBtn.addEventListener('click', importJSON);
+        exportJsonBtn.addEventListener('click', exportJSON);
+        exportCsvBtn.addEventListener('click', exportCSV);
+        modalCloseBtn.addEventListener('click', hideValidationModal);
+        validationModal.addEventListener('click', (e) => { if (e.target === validationModal) hideValidationModal(); });
         
+        // --- CORE WORKFLOW FUNCTIONS ---
         async function handleGenerateAndRun() {
             if (!appState.selectedGoal) { showStatus('error', 'Please select a goal in Step 2.'); return; }
             collectFormData();
             const promptText = generatePromptText();
             promptDisplay.textContent = promptText;
             outputSection.classList.add('show');
+            // FIX: Scroll the output section into view so user can see the loading state
+            outputSection.scrollIntoView({ behavior: 'smooth' });
             updateProgressStep(4);
             await executeWorkflow(promptText);
         }
         
         async function executeWorkflow(promptText) {
             llmResponseContainer.style.display = 'block';
-            llmResponseDisplay.innerHTML = '';
+            llmResponseDisplay.innerHTML = ''; 
             llmResponseDisplay.style.color = '';
             llmResponseContainer.querySelector('.loading-indicator').style.display = 'flex';
             generateBtn.disabled = true;
@@ -289,6 +294,7 @@
             }
         }
 
+        // --- DATA HANDLING FUNCTIONS ---
         function collectFormData() {
             const getMultiSelectValues = g => Array.from(document.querySelectorAll(`[data-group="${g}"] .select-btn.active`)).map(b => b.dataset.value);
             appState.formData = { 
@@ -321,23 +327,160 @@
             }
             return prompt;
         }
-        
-        function resetApp() {
-            appState.currentStep = 1; appState.selectedGoal = null; appState.formData = {}; appState.prepopulatedData = null;
-            form.reset();
-            document.getElementById('toggleOptionalDetails').checked = false; document.getElementById('optionalDetailsContainer').classList.remove('show');
-            document.querySelectorAll('.select-btn.active, .option-card.selected, .mini-card.selected').forEach(el => el.classList.remove('active', 'selected'));
-            document.querySelectorAll('.custom-option').forEach(el => el.remove());
-            document.querySelectorAll('.other-input-wrapper').forEach(el => el.style.display = 'none');
-            dynamicSection.innerHTML = ''; dynamicSection.style.display = 'none';
-            outputSection.classList.remove('show');
-            llmResponseContainer.style.display = 'none'; llmResponseDisplay.innerHTML = ''; llmResponseDisplay.style.color = '';
-            generateBtn.disabled = false;
-            const existingSpinner = generateBtn.querySelector('.loading-spinner');
-            if (existingSpinner) existingSpinner.remove();
-            updateProgressStep(1);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        function exportJSON() {
+            collectFormData();
+            if (!appState.formData.charity.name) { showStatus('error', 'Please fill in at least the organisation name before exporting.'); return; }
+            const dataStr = JSON.stringify(appState.formData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `prompt-data-${appState.formData.charity.name.replace(/\s+/g, '-')}-${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
+
+        function exportCSV() {
+            collectFormData();
+            if (!appState.formData.charity.name) { showStatus('error', 'Please fill in at least the organisation name before exporting.'); return; }
+            const flattenObject = (obj, prefix = '') => Object.keys(obj).reduce((acc, k) => {
+                const pre = prefix.length ? prefix + '.' : '';
+                if (typeof obj[k] === 'object' && obj[k] !== null && !Array.isArray(obj[k])) { Object.assign(acc, flattenObject(obj[k], pre + k));
+                } else { acc[pre + k] = Array.isArray(obj[k]) ? obj[k].join('; ') : obj[k]; }
+                return acc;
+            }, {});
+            const flatData = flattenObject(appState.formData);
+            const headers = Object.keys(flatData).join(',');
+            const values = Object.values(flatData).map(val => `"${String(val || '').replace(/"/g, '""')}"`).join(',');
+            const csvContent = `${headers}\n${values}`;
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `prompt-data-${appState.formData.charity.name.replace(/\s+/g, '-')}-${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = e => {
+                const file = e.target.files[0]; if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        validateAndApplyData(data);
+                    } catch (err) {
+                        showValidationModal([`The selected file is not valid JSON. Error: ${err.message}`], []);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function validateAndApplyData(data) {
+            const errors = [], warnings = [], successes = [];
+            if (!data.charity || !data.goal || !data.goalDetails) { errors.push('JSON is missing basic structure (charity, goal, or goalDetails).'); showValidationModal(errors, warnings); return; }
+            if (!data.charity.name) errors.push('Organisation Name is required.'); else successes.push('Organisation Name found.');
+            if (!data.goal) errors.push('A Goal is required.'); else successes.push('Goal found.');
+            const requiredGoalFields = { 'create-story': ['keyFinding', 'solution'], 'find-data': ['cause', 'area'], 'validate-data': ['dataSource'] };
+            if (requiredGoalFields[data.goal]) {
+                requiredGoalFields[data.goal].forEach(field => {
+                    if (!data.goalDetails[field]) errors.push(`'${field}' is required for your goal but was not found.`);
+                    else successes.push(`Goal detail '${field}' found.`);
+                });
+            }
+            if (!data.charity.description) warnings.push('Recommended: Organisation Description is missing.');
+            if (!data.charity.website) warnings.push('Recommended: Website Address is missing.');
+            showValidationModal(errors, warnings, successes);
+            if (errors.length === 0) populateForm(data);
+        }
+
+        function populateForm(data) {
+            resetApp();
+            form.charityName.value = data.charity.name || '';
+            form.charityType.value = data.charity.type || '';
+            const optionalDataExists = data.charity.website || data.charity.description || data.charity.ageGroups?.length || data.charity.benefits?.length;
+            if (optionalDataExists) {
+                form.website.value = data.charity.website || '';
+                form.description.value = data.charity.description || '';
+                document.getElementById('toggleOptionalDetails').checked = true;
+                document.getElementById('optionalDetailsContainer').classList.add('show');
+            }
+            ['ageGroups', 'benefits'].forEach(groupName => {
+                if (data.charity[groupName]?.length) {
+                    const group = document.querySelector(`[data-group="${groupName}"]`);
+                    data.charity[groupName].forEach(value => {
+                        let btn = group.querySelector(`[data-value="${value}"]`);
+                        if (!btn) {
+                            btn = document.createElement('button'); btn.type = 'button'; btn.className = 'select-btn custom-option';
+                            btn.dataset.value = value; btn.innerHTML = `<span class="material-icons">push_pin</span> ${value}`;
+                            group.insertBefore(btn, group.querySelector('.select-btn-other'));
+                        }
+                        btn.classList.add('active');
+                    });
+                }
+            });
+            if (data.goal) {
+                const goalCard = document.querySelector(`.option-card[data-goal="${data.goal}"]`);
+                if (goalCard) {
+                    handleGoalSelection(goalCard);
+                    setTimeout(() => {
+                        Object.keys(data.goalDetails).forEach(key => {
+                            const el = document.getElementById(key);
+                            if (el) el.value = data.goalDetails[key];
+                            else if (Array.isArray(data.goalDetails[key])) {
+                                const group = document.querySelector(`[data-group="${key}"]`);
+                                data.goalDetails[key].forEach(value => {
+                                    let btn = group.querySelector(`[data-value="${value}"]`);
+                                    if (!btn) {
+                                        btn = document.createElement('button'); btn.type = 'button'; btn.className = 'select-btn custom-option';
+                                        btn.dataset.value = value; btn.innerHTML = `<span class="material-icons">push_pin</span> ${value}`;
+                                        group.insertBefore(btn, group.querySelector('.select-btn-other'));
+                                    }
+                                    btn.classList.add('active');
+                                });
+                            }
+                        });
+                    }, 50);
+                }
+            }
+            appState.formData = data;
+            showStatus('success', 'JSON data successfully imported and applied.');
+        }
+        
+        // --- UI & DOM MANIPULATION FUNCTIONS ---
+        function handleDelegatedClicks(e) {
+            const el = e.target;
+            if (el.classList.contains('select-btn')) { el.classList.toggle('active'); }
+            if (el.closest('.mini-card')) { applyTemplate(parseInt(el.closest('.mini-card').dataset.index, 10)); }
+            if (el.closest('.option-card')) { handleGoalSelection(el.closest('.option-card')); }
+            if (el.closest('.accordion-button')) { toggleAccordion(el.closest('.accordion-button')); }
+            if (el.classList.contains('select-btn-other')) { const wrapper = el.nextElementSibling; if(wrapper) wrapper.style.display = wrapper.style.display === 'none' ? 'flex' : 'none'; }
+            if (el.classList.contains('btn-add-option')) {
+                const wrapper = el.parentElement;
+                const input = wrapper.querySelector('input');
+                if (input && input.value.trim()) {
+                    const group = wrapper.parentElement;
+                    const newBtn = document.createElement('button');
+                    newBtn.type = 'button'; newBtn.className = 'select-btn active custom-option';
+                    newBtn.dataset.value = input.value.trim();
+                    newBtn.innerHTML = `<span class="material-icons">push_pin</span> ${input.value.trim()}`;
+                    group.insertBefore(newBtn, group.querySelector('.select-btn-other'));
+                    input.value = '';
+                }
+            }
+        }
+        
         function applyTemplate(index) {
             const t = quickStartTemplates[index]; if (!t) return;
             form.charityName.value = t.data.charityName; form.charityType.value = t.data.charityType; form.website.value = t.data.website || ''; form.description.value = t.data.description || '';
@@ -355,6 +498,7 @@
             showStatus('success', `"${t.title}" template applied!`);
             if(appState.selectedGoal) handleGoalSelection(document.querySelector(`.option-card[data-goal="${appState.selectedGoal}"]`));
         }
+
         function handleGoalSelection(card) {
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected'); appState.selectedGoal = card.dataset.goal;
@@ -371,6 +515,26 @@
                 });
             }
         }
+
+        function resetApp() {
+            appState.currentStep = 1; appState.selectedGoal = null; appState.formData = {}; appState.prepopulatedData = null;
+            form.reset();
+            document.getElementById('toggleOptionalDetails').checked = false; document.getElementById('optionalDetailsContainer').classList.remove('show');
+            document.querySelectorAll('.select-btn.active, .option-card.selected, .mini-card.selected').forEach(el => el.classList.remove('active', 'selected'));
+            document.querySelectorAll('.custom-option').forEach(el => el.remove());
+            document.querySelectorAll('.other-input-wrapper').forEach(el => el.style.display = 'none');
+            dynamicSection.innerHTML = ''; dynamicSection.style.display = 'none';
+            outputSection.classList.remove('show');
+            llmResponseContainer.style.display = 'none'; llmResponseDisplay.innerHTML = ''; llmResponseDisplay.style.color = '';
+            generateBtn.disabled = false;
+            const existingSpinner = generateBtn.querySelector('.loading-spinner');
+            if (existingSpinner) existingSpinner.remove();
+            updateProgressStep(1);
+            hideValidationModal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function hideValidationModal() { validationModal.classList.remove('show'); }
         function renderMiniCards() { quickStartTemplates.forEach((t, i) => { const c = document.createElement('div'); c.className = 'mini-card'; c.dataset.index = i; c.innerHTML = `<span class="material-icons">${t.icon}</span><div class="mini-card-title">${t.title}</div>`; quickStartContainer.appendChild(c); }); }
         function toggleAccordion(button) { const content = button.nextElementSibling; button.classList.toggle('active'); content.classList.toggle('active'); }
         function renderDynamicSection(goal) { const t = document.getElementById(`template-${goal}`); if (!t) return; dynamicSection.innerHTML = ''; dynamicSection.appendChild(t.content.cloneNode(true)); dynamicSection.style.display = 'block';}
