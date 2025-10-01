@@ -368,7 +368,7 @@
             const requiredGoalFields = { 'create-story': ['keyFinding', 'solution'], 'find-data': ['cause', 'area'], 'validate-data': ['dataSource'] };
             if (requiredGoalFields[data.goal]) {
                 requiredGoalFields[data.goal].forEach(field => {
-                    if (!data.goalDetails[field]) errors.push(`'${field}' is required for your selected goal but was not found.`);
+                    if (!data.goalDetails[field]) errors.push(`'${field}' is required for your goal but was not found.`);
                     else successes.push(`Goal detail '${field}' found.`);
                 });
             }
@@ -413,15 +413,17 @@
                             if (el) el.value = data.goalDetails[key];
                             else if (Array.isArray(data.goalDetails[key])) {
                                 const group = document.querySelector(`[data-group="${key}"]`);
-                                data.goalDetails[key].forEach(value => {
-                                    let btn = group.querySelector(`[data-value="${value}"]`);
-                                    if (!btn) {
-                                        btn = document.createElement('button'); btn.type = 'button'; btn.className = 'select-btn custom-option';
-                                        btn.dataset.value = value; btn.innerHTML = `<span class="material-icons">push_pin</span> ${value}`;
-                                        group.insertBefore(btn, group.querySelector('.select-btn-other'));
-                                    }
-                                    btn.classList.add('active');
-                                });
+                                if (group) {
+                                    data.goalDetails[key].forEach(value => {
+                                        let btn = group.querySelector(`[data-value="${value}"]`);
+                                        if (!btn) {
+                                            btn = document.createElement('button'); btn.type = 'button'; btn.className = 'select-btn custom-option';
+                                            btn.dataset.value = value; btn.innerHTML = `<span class="material-icons">push_pin</span> ${value}`;
+                                            group.insertBefore(btn, group.querySelector('.select-btn-other'));
+                                        }
+                                        btn.classList.add('active');
+                                    });
+                                }
                             }
                         });
                     }, 50);
@@ -454,13 +456,13 @@
         }
         
         function applyTemplate(index) {
+            resetApp(); // Reset before applying a new template for a clean slate
             const t = quickStartTemplates[index]; if (!t) return;
             form.charityName.value = t.data.charityName; form.charityType.value = t.data.charityType; form.website.value = t.data.website || ''; form.description.value = t.data.description || '';
             const toggle = document.getElementById('toggleOptionalDetails');
             const showOptional = !!(t.data.website || t.data.description || t.data.ageGroups?.length || t.data.benefits?.length);
             toggle.checked = showOptional; document.getElementById('optionalDetailsContainer').classList.toggle('show', showOptional);
             document.querySelectorAll('[data-group]').forEach(group => {
-                group.querySelectorAll('.select-btn.active').forEach(btn => btn.classList.remove('active'));
                 const groupName = group.dataset.group;
                 if(t.data[groupName] && Array.isArray(t.data[groupName])) { t.data[groupName].forEach(val => { const btn = group.querySelector(`[data-value="${val}"]`); if (btn) btn.classList.add('active'); }); }
             });
@@ -506,6 +508,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
+        function showValidationModal(errors = [], warnings = [], successes = []) {
+            let html = '';
+            errors.forEach(msg => html += `<div class="validation-item error"><span class="material-icons">error</span>${msg}</div>`);
+            warnings.forEach(msg => html += `<div class="validation-item warning"><span class="material-icons">warning</span>${msg}</div>`);
+            successes.forEach(msg => html += `<div class="validation-item success"><span class="material-icons">check_circle</span>${msg}</div>`);
+            if(errors.length === 0) { html += `<div class="validation-item success"><span class="material-icons">thumb_up</span><b>Import Successful!</b> The form has been populated with your data.</div>`;
+            } else { html += `<div class="validation-item error"><span class="material-icons">block</span><b>Import Failed.</b> Critical information is missing.</div>`; }
+            validationBody.innerHTML = html;
+            validationModal.classList.add('show');
+        }
+
         function hideValidationModal() { validationModal.classList.remove('show'); }
         function renderMiniCards() { quickStartContainer.innerHTML = ''; quickStartTemplates.forEach((t, i) => { const c = document.createElement('div'); c.className = 'mini-card'; c.dataset.index = i; c.innerHTML = `<span class="material-icons">${t.icon}</span><div class="mini-card-title">${t.title}</div>`; quickStartContainer.appendChild(c); }); }
         function toggleAccordion(button) { const content = button.nextElementSibling; button.classList.toggle('active'); content.classList.toggle('active'); }
