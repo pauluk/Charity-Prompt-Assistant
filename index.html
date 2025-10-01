@@ -30,9 +30,10 @@
             background-size: 400% 400%;
             animation: gradientShift 40s ease infinite;
             color: var(--text-dark);
+            padding-bottom: 120px;
         }
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .floating-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .floating-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
         .shape, .drop { position: absolute; background: rgba(255, 255, 255, 0.1); border-radius: 50%; }
         .shape { animation: float 25s infinite ease-in-out; }
         .shape:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-duration: 20s; }
@@ -125,6 +126,7 @@
         .accordion-body a { color: var(--primary); text-decoration: none; font-weight: 500; }
         #llmResponseContainer { background: white; border: 2px solid var(--primary); border-radius: 20px; padding: 30px; margin-bottom: 30px; min-height: 150px; }
         #llmResponseDisplay { line-height: 1.7; color: var(--text-dark); animation: fadeIn 0.5s; }
+        #llmResponseDisplay a { color: var(--primary); }
         .loading-indicator { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-light); }
         .loading-dots { display: flex; }
         .loading-dots div { width: 12px; height: 12px; background: var(--primary); border-radius: 50%; margin: 0 5px; animation: bounce 1.4s infinite ease-in-out both; }
@@ -155,15 +157,14 @@
         .validation-item.success { background: #f0fdf4; color: var(--success-color); }
         .validation-item.warning { background: #fffbeb; color: var(--warning-color); }
         .validation-item.error { background: #fef2f2; color: var(--error-color); }
+        .app-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 15px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 50; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .app-footer .btn { padding: 10px 20px; font-size: 0.9rem; }
         .mt-4 { margin-top: 25px; } .mt-5 { margin-top: 40px; } .text-center { text-align: center; }
         @media (max-width: 768px) { .header h1 { font-size: 2rem; } .form-card { padding: 25px; } .option-cards, .quick-start-container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <div class="floating-shapes">
-        <div class="shape"></div><div class="shape"></div>
-        <div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div>
-    </div>
+    <div class="floating-shapes"><div class="shape"></div><div class="shape"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div></div>
     <div class="container">
         <header class="header"><h1><span class="material-icons">favorite</span>Charity Bid Prompt Assistant</h1><p>Create powerful prompts. Find supporting data. Analyse your impact.</p></header>
         <div class="progress-steps"><div class="progress-step active" data-step="1"><div class="progress-step-circle"><span class="material-icons">business</span></div><span class="progress-step-label">Organisation</span></div><div class="progress-step" data-step="2"><div class="progress-step-circle"><span class="material-icons">category</span></div><span class="progress-step-label">Goal</span></div><div class="progress-step" data-step="3"><div class="progress-step-circle"><span class="material-icons">build</span></div><span class="progress-step-label">Details</span></div><div class="progress-step" data-step="4"><div class="progress-step-circle"><span class="material-icons">auto_awesome</span></div><span class="progress-step-label">Generate</span></div></div>
@@ -186,10 +187,10 @@
         <div id="outputSection" class="output-section">
             <div id="llmResponseContainer" style="display: none;"><div class="output-header"><span class="material-icons">psychology</span><h3>Live Response from Workflow</h3></div><div class="loading-indicator"><div class="loading-dots"><div></div><div></div><div></div></div><p style="margin-top: 15px;">Waiting for response from workflow...</p></div><div id="llmResponseDisplay"></div></div>
             <div class="prompt-display-wrapper"><div class="output-header"><span class="material-icons">description</span><h3>Your Generated Prompt (Reference)</h3></div><div style="position: relative;"><pre id="promptDisplay" class="prompt-display"></pre><button id="copyBtn" class="copy-btn"><span class="material-icons">content_copy</span> Copy</button></div></div>
-            <div class="text-center" style="margin-top: 25px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;"><button type="button" id="importBtn" class="btn btn-secondary"><span class="material-icons">upload_file</span>Import JSON</button><button type="button" id="exportJsonBtn" class="btn btn-secondary"><span class="material-icons">download</span>Export JSON</button><button type="button" id="exportCsvBtn" class="btn btn-secondary"><span class="material-icons">grid_on</span>Export CSV</button><button type="button" id="resetBtn" class="btn btn-heart"><span class="material-icons">refresh</span>Start Over</button></div>
             <div class="accordion-item"><button type="button" class="accordion-button"><span class="material-icons">expand_more</span>Important: Using Your Prompt Responsibly</button><div class="accordion-content"><div class="accordion-body"><p><strong>Think of this as a starting point, not a final answer.</strong> LLMs are powerful but require critical oversight.</p><ul><li><strong>Verify All Factual Claims:</strong> LLMs can "hallucinate" or invent data. Always cross-reference facts with trusted sources before including them in a bid.</li><li><strong>Iterate and Refine:</strong> Your first response is rarely the best. Ask follow-up questions to refine the output.</li><li><strong>You Are the Expert:</strong> Add your authentic voice and specific case studies. Ensure the final text reflects your organisation's values.</li></ul><p><strong>Recommended LLMs:</strong> <a href="https://gemini.google.com/" target="_blank" rel="noopener">Google Gemini</a>, <a href="https://chat.openai.com/" target="_blank" rel="noopener">OpenAI ChatGPT</a>, <a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Anthropic Claude</a>.</p></div></div></div>
         </div>
     </div>
+    <footer class="app-footer"><button type="button" id="importBtn" class="btn btn-secondary"><span class="material-icons">upload_file</span>Import JSON</button><button type="button" id="exportJsonBtn" class="btn btn-secondary"><span class="material-icons">download</span>Export JSON</button><button type="button" id="exportCsvBtn" class="btn btn-secondary"><span class="material-icons">grid_on</span>Export CSV</button><button type="button" id="resetBtn" class="btn btn-heart"><span class="material-icons">refresh</span>Start Over</button></footer>
     <div id="validationModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Import Validation Report</h3><button id="modalCloseBtn" class="modal-close">&times;</button></div><div id="validationBody" class="modal-body"></div></div></div>
     <template id="template-create-story"><div class="section-header"><span class="material-icons">create</span><h2>Story Details</h2><span class="section-badge">Step 3</span></div><div class="form-group"><label class="form-label" for="keyFinding"><span class="material-icons">insights</span>Key Finding or Statistic</label><div class="input-wrapper"><span class="material-icons input-icon">trending_up</span><input type="text" class="form-control" id="keyFinding" placeholder="e.g., Youth unemployment rose 15% in our area last year" required></div></div><div class="form-group"><label class="form-label" for="solution"><span class="material-icons">lightbulb</span>Proposed Project or Solution</label><div class="input-wrapper"><span class="material-icons input-icon">build_circle</span><input type="text" class="form-control" id="solution" placeholder="e.g., A 12-week digital skills programme for 50 local youths" required></div></div><div class="form-group"><label class="form-label"><span class="material-icons">people</span>Target Funder</label><div class="multi-select-group" data-group="audience"><button type="button" class="select-btn" data-value="Local Council"><span class="material-icons">account_balance</span>Local Council</button><button type="button" class="select-btn" data-value="Community Foundation"><span class="material-icons">foundation</span>Community Foundation</button><button type="button" class="select-btn" data-value="Corporate Sponsor"><span class="material-icons">business</span>Corporate Sponsor</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom funder..."><button type="button" class="btn-add-option">Add</button></div></div></div></template>
     <template id="template-find-data"><div class="section-header"><span class="material-icons">search</span><h2>Data Search Criteria</h2><span class="section-badge">Step 3</span></div><div class="form-group"><label class="form-label" for="cause"><span class="material-icons">favorite</span>Your Cause or Mission</label><div class="input-wrapper"><span class="material-icons input-icon">flag</span><input type="text" class="form-control" id="cause" placeholder="e.g., Reducing youth unemployment" required></div></div><div class="form-group"><label class="form-label" for="area"><span class="material-icons">location_on</span>Geographic Area</label><div class="input-wrapper"><span class="material-icons input-icon">map</span><input type="text" class="form-control" id="area" placeholder="e.g., Burnley, Lancashire" required></div></div><div class="form-group"><label class="form-label"><span class="material-icons">storage</span>Types of Data Needed</label><div class="multi-select-group" data-group="dataTypes"><button type="button" class="select-btn" data-value="Demographics"><span class="material-icons">group</span>Demographics</button><button type="button" class="select-btn" data-value="Economic"><span class="material-icons">trending_up</span>Economic</button><button type="button" class="select-btn" data-value="Health"><span class="material-icons">health_and_safety</span>Health</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom data type..."><button type="button" class="btn-add-option">Add</button></div></div></div></template>
@@ -212,10 +213,7 @@
             { icon: 'sports_soccer', title: 'Community Sports', data: { charityName: 'Burnley Junior FC', charityType: 'cic', description: 'We provide affordable and inclusive football coaching for children of all backgrounds, promoting teamwork and healthy lifestyles.', website: '', ageGroups: ['Children (5-12)'], benefits: ['Improved Health', 'Community Connection', 'Skill Development'], 'create-story': { keyFinding: "Childhood obesity rates in our club's postcodes are 10% higher than the national average.", solution: "Launch a free 'Kickstart Health' after-school football and nutrition programme for 100 children.", audience: ['Local Council', 'Sport England'] }, 'find-data': { cause: 'Childhood obesity and access to sport', area: 'Burnley', dataTypes: ['Health', 'Demographics'] }, 'validate-data': { dataSource: 'Club registration data and attendance records from the last three seasons.', validationGoals: ['Understand User Demographics', 'Identify Trends'] }}}
         ];
         
-        // --- APPLICATION STATE ---
         const appState = { currentStep: 1, selectedGoal: null, formData: {}, prepopulatedData: null };
-
-        // --- DOM ELEMENT SELECTORS ---
         const quickStartContainer = document.getElementById('quickStartContainer');
         const form = document.getElementById('charityForm');
         const dynamicSection = document.getElementById('dynamicSection');
@@ -234,30 +232,25 @@
         const modalCloseBtn = document.getElementById('modalCloseBtn');
         const validationBody = document.getElementById('validationBody');
 
-        // --- INITIALIZATION ---
         renderMiniCards();
 
-        // --- EVENT LISTENERS ---
         document.getElementById('toggleOptionalDetails').addEventListener('change', function() { document.getElementById('optionalDetailsContainer').classList.toggle('show', this.checked); });
         document.body.addEventListener('click', handleDelegatedClicks);
         generateBtn.addEventListener('click', handleGenerateAndRun);
         copyBtn.addEventListener('click', copyPrompt);
         resetBtn.addEventListener('click', () => { if (confirm('Are you sure you want to start over?')) resetApp(); });
-        // FIX: Added event listeners for import/export buttons
         importBtn.addEventListener('click', importJSON);
         exportJsonBtn.addEventListener('click', exportJSON);
         exportCsvBtn.addEventListener('click', exportCSV);
         modalCloseBtn.addEventListener('click', hideValidationModal);
         validationModal.addEventListener('click', (e) => { if (e.target === validationModal) hideValidationModal(); });
         
-        // --- CORE WORKFLOW FUNCTIONS ---
         async function handleGenerateAndRun() {
             if (!appState.selectedGoal) { showStatus('error', 'Please select a goal in Step 2.'); return; }
             collectFormData();
             const promptText = generatePromptText();
             promptDisplay.textContent = promptText;
             outputSection.classList.add('show');
-            // FIX: Scroll the output section into view so user can see the loading state
             outputSection.scrollIntoView({ behavior: 'smooth' });
             updateProgressStep(4);
             await executeWorkflow(promptText);
@@ -271,21 +264,16 @@
             generateBtn.disabled = true;
             const spinner = document.createElement('span'); spinner.className = 'loading-spinner';
             generateBtn.prepend(spinner);
-            
             const webhookUrl = 'https://web.openerpsolutions.co.uk/webhook/2719fbe3-2913-46e9-80ab-1162a5a37e7b';
-            
             try {
                 const response = await fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: promptText, inputs: appState.formData }) });
                 const responseText = await response.text(); 
-                
                 if (!response.ok) { throw new Error(`Webhook Error: ${response.status} ${response.statusText}. Response: ${responseText}`); }
-
                 llmResponseContainer.querySelector('.loading-indicator').style.display = 'none';
                 llmResponseDisplay.innerHTML = responseText; 
-                
             } catch (error) {
                 llmResponseContainer.querySelector('.loading-indicator').style.display = 'none';
-                const errorMessage = `An error occurred while contacting the workflow.\n\nDetails: ${error.message}\n\nPlease check your n8n workflow to ensure it is active and configured to return a valid HTML response.`;
+                const errorMessage = `An error occurred while contacting the workflow.\n\nDetails: ${error.message}`;
                 llmResponseDisplay.textContent = errorMessage; 
                 llmResponseDisplay.style.color = '#ef4444';
             } finally {
@@ -294,7 +282,6 @@
             }
         }
 
-        // --- DATA HANDLING FUNCTIONS ---
         function collectFormData() {
             const getMultiSelectValues = g => Array.from(document.querySelectorAll(`[data-group="${g}"] .select-btn.active`)).map(b => b.dataset.value);
             appState.formData = { 
@@ -335,12 +322,8 @@
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `prompt-data-${appState.formData.charity.name.replace(/\s+/g, '-')}-${new Date().toISOString().slice(0,10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            a.href = url; a.download = `prompt-data-${appState.formData.charity.name.replace(/\s+/g, '-')}-${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
         }
 
         function exportCSV() {
@@ -359,28 +342,18 @@
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `prompt-data-${appState.formData.charity.name.replace(/\s+/g, '-')}-${new Date().toISOString().slice(0,10)}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            a.href = url; a.download = `prompt-data-${appState.formData.charity.name.replace(/\s+/g, '-')}-${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
         }
 
         function importJSON() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
+            const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
             input.onchange = e => {
                 const file = e.target.files[0]; if (!file) return;
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    try {
-                        const data = JSON.parse(event.target.result);
-                        validateAndApplyData(data);
-                    } catch (err) {
-                        showValidationModal([`The selected file is not valid JSON. Error: ${err.message}`], []);
-                    }
+                    try { const data = JSON.parse(event.target.result); validateAndApplyData(data); } 
+                    catch (err) { showValidationModal([`The selected file is not valid JSON. Error: ${err.message}`], []); }
                 };
                 reader.readAsText(file);
             };
@@ -395,7 +368,7 @@
             const requiredGoalFields = { 'create-story': ['keyFinding', 'solution'], 'find-data': ['cause', 'area'], 'validate-data': ['dataSource'] };
             if (requiredGoalFields[data.goal]) {
                 requiredGoalFields[data.goal].forEach(field => {
-                    if (!data.goalDetails[field]) errors.push(`'${field}' is required for your goal but was not found.`);
+                    if (!data.goalDetails[field]) errors.push(`'${field}' is required for your selected goal but was not found.`);
                     else successes.push(`Goal detail '${field}' found.`);
                 });
             }
@@ -458,7 +431,6 @@
             showStatus('success', 'JSON data successfully imported and applied.');
         }
         
-        // --- UI & DOM MANIPULATION FUNCTIONS ---
         function handleDelegatedClicks(e) {
             const el = e.target;
             if (el.classList.contains('select-btn')) { el.classList.toggle('active'); }
@@ -535,7 +507,7 @@
         }
         
         function hideValidationModal() { validationModal.classList.remove('show'); }
-        function renderMiniCards() { quickStartTemplates.forEach((t, i) => { const c = document.createElement('div'); c.className = 'mini-card'; c.dataset.index = i; c.innerHTML = `<span class="material-icons">${t.icon}</span><div class="mini-card-title">${t.title}</div>`; quickStartContainer.appendChild(c); }); }
+        function renderMiniCards() { quickStartContainer.innerHTML = ''; quickStartTemplates.forEach((t, i) => { const c = document.createElement('div'); c.className = 'mini-card'; c.dataset.index = i; c.innerHTML = `<span class="material-icons">${t.icon}</span><div class="mini-card-title">${t.title}</div>`; quickStartContainer.appendChild(c); }); }
         function toggleAccordion(button) { const content = button.nextElementSibling; button.classList.toggle('active'); content.classList.toggle('active'); }
         function renderDynamicSection(goal) { const t = document.getElementById(`template-${goal}`); if (!t) return; dynamicSection.innerHTML = ''; dynamicSection.appendChild(t.content.cloneNode(true)); dynamicSection.style.display = 'block';}
         function updateProgressStep(step) { appState.currentStep = step; document.querySelectorAll('.progress-step').forEach(s => { const stepNum = parseInt(s.dataset.step, 10); s.classList.remove('active', 'completed'); if (stepNum < step) s.classList.add('completed'); else if (stepNum === step) s.classList.add('active'); }); }
