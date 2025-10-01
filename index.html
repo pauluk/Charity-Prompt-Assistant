@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charity Bid Prompt Assistant - Live</title>
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #0cebeb 0%, #20e3b2 0%, #29ffc6 100%);
+            --gradient-heart: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --primary: #667eea;
+            --accent: #f5576c;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --shadow-glow: 0 0 30px rgba(102, 126, 234, 0.4);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* UPDATED: Softer, slower gradient animation */
+            background: linear-gradient(-45deg, #667eea, #764ba2, #d299c2, #a8edea);
+            background-size: 400% 400%;
+            animation: gradientShift 40s ease infinite;
+            color: var(--text-dark);
+        }
+        /* UPDATED: Slower animation speed */
+        @keyframes gradientShift { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; z-index: 1; position: relative; }
+        .header { text-align: center; margin-bottom: 50px; color: white; }
+        .header h1 { font-size: 2.8rem; text-shadow: 2px 4px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .header h1 .material-icons { font-size: 3.2rem; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .header p { font-size: 1.1rem; color: rgba(255,255,255,0.9); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+        .form-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); border-radius: 30px; padding: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); }
+        .section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0; }
+        .section-header .material-icons { font-size: 32px; background: var(--gradient-primary); -webkit-background-clip: text; color: transparent; }
+        .section-header h2, .quick-start-header h4 { font-size: 1.6rem; font-weight: 600; color: var(--text-dark); margin: 0; flex: 1; }
+        .section-badge { background: var(--gradient-primary); color: white; padding: 5px 15px; border-radius: 25px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .form-group { margin-bottom: 25px; }
+        .form-label { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: 500; font-size: 0.95rem; }
+        .form-label .material-icons { font-size: 20px; color: var(--primary); }
+        .form-control, .form-select, textarea.form-control { width: 100%; padding: 14px 18px 14px 45px; border: 2px solid #e2e8f0; border-radius: 15px; font-size: 0.95rem; font-family: 'Poppins', sans-serif; background: white; transition: all 0.3s ease; }
+        textarea.form-control { resize: vertical; padding: 14px 18px; }
+        .form-control:focus, .form-select:focus, textarea.form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(102,126,234,0.1); }
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 20px; pointer-events: none; }
+        .form-select { cursor: pointer; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 20px; -webkit-appearance: none; appearance: none; }
+        .option-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .option-card { background: white; border: 2px solid #e2e8f0; border-radius: 20px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .option-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(102,126,234,0.2); border-color: var(--primary); }
+        .option-card.selected { border-color: var(--primary); box-shadow: 0 10px 25px rgba(102,126,234,0.3); background: linear-gradient(135deg, rgba(102,126,234,0.05), rgba(118,75,162,0.05)); }
+        .option-card-icon { font-size: 48px; margin-bottom: 15px; background: var(--gradient-primary); -webkit-background-clip: text; color: transparent; }
+        .option-card-title { font-size: 1.1rem; font-weight: 600; }
+        .option-card-description { font-size: 0.85rem; color: var(--text-light); }
+        .multi-select-group { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+        .select-btn { padding: 10px 20px; border: 2px solid #e2e8f0; border-radius: 25px; background: white; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+        .select-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .select-btn.active { background: var(--gradient-primary); color: white; border-color: transparent; }
+        .select-btn .material-icons { font-size: 16px; }
+        .select-btn-other { border-style: dashed; color: var(--primary); }
+        .other-input-wrapper { display: flex; gap: 10px; width: 100%; margin-top: 10px; }
+        .other-input-wrapper input { flex-grow: 1; padding: 8px 15px; border: 2px solid #e2e8f0; border-radius: 25px; }
+        .btn-add-option { padding: 8px 15px; background: var(--primary); color: white; border: none; border-radius: 25px; cursor: pointer; }
+        .progress-steps { display: flex; justify-content: space-between; margin-bottom: 40px; }
+        .progress-step { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+        .progress-step-circle { width: 50px; height: 50px; border-radius: 50%; background: white; border: 3px solid #e2e8f0; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; transition: all 0.4s ease; }
+        .progress-step.active .progress-step-circle { background: var(--gradient-primary); border-color: transparent; transform: scale(1.1); box-shadow: var(--shadow-glow); }
+        .progress-step.completed .progress-step-circle { background: var(--gradient-success); border-color: transparent; }
+        .progress-step-circle .material-icons { font-size: 24px; color: var(--text-light); }
+        .progress-step.active .progress-step-circle .material-icons, .progress-step.completed .progress-step-circle .material-icons { color: white; }
+        .progress-step-label { font-size: 0.85rem; color: rgba(255,255,255,0.8); font-weight: 500; }
+        .progress-step.active .progress-step-label { color: white; font-weight: 700; }
+        .btn { padding: 14px 30px; border: none; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn:disabled { cursor: not-allowed; opacity: 0.7; }
+        .btn-primary { background: var(--gradient-primary); color: white; }
+        .btn-heart { background: var(--gradient-heart); color: white; }
+        .btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .output-section { margin-top: 50px; padding: 40px; background: rgba(255,255,255,0.98); border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); display: none; }
+        .output-section.show { display: block; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .output-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .output-header .material-icons { font-size: 32px; background: var(--gradient-primary); -webkit-background-clip: text; color: transparent; }
+        .output-header h3 { font-size: 1.8rem; font-weight: 600; margin: 0; }
+        .prompt-display-wrapper { margin-top: 25px; }
+        .prompt-display { background: #f1f5f9; color: #475569; padding: 25px; border-radius: 20px; font-family: 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; max-height: 300px; overflow-y: auto; position: relative; }
+        .copy-btn { position: absolute; top: 15px; right: 15px; padding: 8px 16px; background: rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; color: #333; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: 'Poppins', sans-serif; }
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toggle-group { display: flex; align-items: center; gap: 15px; padding: 15px; background: #f7faff; border-radius: 15px; margin: 25px 0; }
+        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 28px; }
+        .toggle-slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .toggle-slider { background-color: var(--primary); }
+        input:checked + .toggle-slider:before { transform: translateX(22px); }
+        #optionalDetailsContainer { transition: all 0.5s ease-in-out; max-height: 0; overflow: hidden; opacity: 0; }
+        #optionalDetailsContainer.show { max-height: 1000px; opacity: 1; }
+        .accordion-item { border: 1px solid #e2e8f0; border-radius: 15px; overflow: hidden; background: #f9fafb; margin-top: 25px; }
+        .accordion-button { background: transparent; color: var(--text-dark); font-weight: 500; padding: 15px 20px; border: none; width: 100%; text-align: left; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 0.9rem; }
+        .accordion-button .material-icons { font-size: 24px; color: var(--primary); transition: transform 0.3s; }
+        .accordion-button.active .material-icons { transform: rotate(180deg); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
+        .accordion-content.active { max-height: 1000px; }
+        .accordion-body { padding: 5px 25px 25px 25px; color: var(--text-light); line-height: 1.7; }
+        .accordion-body a { color: var(--primary); text-decoration: none; font-weight: 500; }
+        #llmResponseContainer { background: white; border: 2px solid var(--primary); border-radius: 20px; padding: 30px; margin-bottom: 30px; min-height: 150px; }
+        #llmResponseDisplay { line-height: 1.7; color: var(--text-dark); animation: fadeIn 0.5s; }
+        .loading-indicator { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-light); }
+        .loading-dots { display: flex; }
+        .loading-dots div { width: 12px; height: 12px; background: var(--primary); border-radius: 50%; margin: 0 5px; animation: bounce 1.4s infinite ease-in-out both; }
+        .loading-dots div:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots div:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+        .quick-start-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .quick-start-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .mini-card { background: #f7faff; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .mini-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 8px 20px rgba(102,126,234,0.15); }
+        .mini-card.selected { border-color: var(--primary); background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1)); transform: scale(1.05); box-shadow: 0 8px 20px rgba(102,126,234,0.2); }
+        .mini-card .material-icons { font-size: 36px; color: var(--primary); margin-bottom: 10px; }
+        .mini-card-title { font-weight: 600; font-size: 1rem; color: var(--text-dark); }
+        .status-message { padding: 15px 20px; border-radius: 15px; margin-top: 20px; display: none; align-items: center; gap: 12px; }
+        .status-message.show { display: flex; animation: fadeIn 0.5s; }
+        .status-message.success { background: #e6f9f3; border-left: 5px solid #10b981; color: #059669; }
+        .status-message.error { background: #fee2e2; border-left: 5px solid #ef4444; color: #dc2626; }
+
+        /* NEW: Floating shapes container */
+        .floating-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .shape, .drop { position: absolute; background: rgba(255, 255, 255, 0.1); border-radius: 50%; }
+        .shape { animation: float 25s infinite ease-in-out; }
+        .shape:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-duration: 20s; }
+        .shape:nth-child(2) { width: 120px; height: 120px; top: 70%; right: 10%; animation-duration: 25s; }
+        .shape:nth-child(3) { width: 60px; height: 60px; bottom: 20%; left: 30%; animation-duration: 30s; }
+        .shape:nth-child(4) { width: 100px; height: 100px; top: 40%; right: 40%; animation-duration: 18s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 80px); } }
+
+        /* NEW: Drop animation */
+        .drop { animation: drop 15s infinite linear; }
+        @keyframes drop { from { top: -10%; transform: translateY(0); opacity: 0.5; } to { top: 110%; transform: translateY(0); opacity: 0.2; } }
+        .drop:nth-of-type(5) { width: 20px; height: 20px; left: 15%; animation-duration: 12s; animation-delay: 2s; }
+        .drop:nth-of-type(6) { width: 30px; height: 30px; left: 40%; animation-duration: 18s; animation-delay: 0s; }
+        .drop:nth-of-type(7) { width: 15px; height: 15px; left: 70%; animation-duration: 10s; animation-delay: 5s; }
+        .drop:nth-of-type(8) { width: 25px; height: 25px; left: 85%; animation-duration: 16s; animation-delay: 1s; }
+        .drop:nth-of-type(9) { width: 18px; height: 18px; left: 5%; animation-duration: 14s; animation-delay: 6s; }
+        .drop:nth-of-type(10) { width: 22px; height: 22px; left: 55%; animation-duration: 20s; animation-delay: 3s; }
+
+        .mt-4 { margin-top: 25px; } .mt-5 { margin-top: 40px; } .text-center { text-align: center; }
+        @media (max-width: 768px) { .header h1 { font-size: 2rem; } .form-card { padding: 25px; } .option-cards, .quick-start-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
+        <div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div>
+    </div>
+    <div class="container">
+        <header class="header">
+            <h1><span class="material-icons">favorite</span>Charity Bid Prompt Assistant</h1>
+            <p>Create powerful prompts. Find supporting data. Analyse your impact.</p>
+        </header>
+        <div class="progress-steps"><div class="progress-step active" data-step="1"><div class="progress-step-circle"><span class="material-icons">business</span></div><span class="progress-step-label">Organisation</span></div><div class="progress-step" data-step="2"><div class="progress-step-circle"><span class="material-icons">category</span></div><span class="progress-step-label">Goal</span></div><div class="progress-step" data-step="3"><div class="progress-step-circle"><span class="material-icons">build</span></div><span class="progress-step-label">Details</span></div><div class="progress-step" data-step="4"><div class="progress-step-circle"><span class="material-icons">auto_awesome</span></div><span class="progress-step-label">Generate</span></div></div>
+        <div class="form-card">
+            <form id="charityForm" onsubmit="return false;">
+                <div class="section-header"><span class="material-icons">foundation</span><h2>Organisation Details</h2><span class="section-badge">Step 1</span></div>
+                <div class="quick-start-header"><span class="material-icons" style="color: var(--primary);">bolt</span><h4>Quick Start Templates</h4></div>
+                <div id="quickStartContainer" class="quick-start-container"></div>
+                <div class="form-group"><label class="form-label" for="charityName"><span class="material-icons">badge</span> Organisation Name</label><div class="input-wrapper"><span class="material-icons input-icon">edit</span><input type="text" class="form-control" id="charityName" placeholder="e.g., Burnley Community Hub" required></div></div>
+                <div class="form-group"><label class="form-label" for="charityType"><span class="material-icons">account_balance</span> Organisation Type</label><div class="input-wrapper"><span class="material-icons input-icon">category</span><select class="form-select" id="charityType"><option value="">Select organisation type...</option><option value="registered-charity">🏛️ Registered Charity</option><option value="cic">🌟 Community Interest Company (CIC)</option><option value="social-enterprise">💼 Social Enterprise</option><option value="voluntary-organisation">🤝 Voluntary Organisation</option></select></div></div>
+                <div class="toggle-group"><label class="toggle-switch"><input type="checkbox" id="toggleOptionalDetails"><span class="toggle-slider"></span></label><label for="toggleOptionalDetails" style="cursor: pointer; font-weight: 500;">Add More Organisation Details (Recommended)</label></div>
+                <div id="optionalDetailsContainer"><div class="form-group"><label class="form-label" for="website"><span class="material-icons">language</span> Website Address</label><div class="input-wrapper"><span class="material-icons input-icon">link</span><input type="url" class="form-control" id="website" placeholder="https://www.yourcharity.org.uk"></div></div><div class="form-group"><label class="form-label" for="description"><span class="material-icons">article</span> Organisation Description (1-2 sentences)</label><textarea class="form-control" id="description" rows="3" placeholder="Describe your organisation's core mission and purpose..."></textarea></div><div class="form-group"><label class="form-label"><span class="material-icons">escalator_warning</span> Primary Age Groups We Serve</label><div class="multi-select-group" data-group="ageGroups"><button type="button" class="select-btn" data-value="Infants (0-4)">Infants (0-4)</button><button type="button" class="select-btn" data-value="Children (5-12)">Children (5-12)</button><button type="button" class="select-btn" data-value="Teenagers (13-17)">Teenagers (13-17)</button><button type="button" class="select-btn" data-value="Young Adults (18-25)">Young Adults (18-25)</button><button type="button" class="select-btn" data-value="Adults (26-64)">Adults (26-64)</button><button type="button" class="select-btn" data-value="Seniors (65+)">Seniors (65+)</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom age group..."><button type="button" class="btn-add-option">Add</button></div></div></div><div class="form-group"><label class="form-label"><span class="material-icons">volunteer_activism</span> Our Beneficiaries Gain...</label><div class="multi-select-group" data-group="benefits"><button type="button" class="select-btn" data-value="Improved Health"><span class="material-icons">health_and_safety</span>Improved Health</button><button type="button" class="select-btn" data-value="Better Education"><span class="material-icons">school</span>Better Education</button><button type="button" class="select-btn" data-value="Gaining Employment"><span class="material-icons">work</span>Gaining Employment</button><button type="button" class="select-btn" data-value="Increased Wellbeing"><span class="material-icons">sentiment_very_satisfied</span>Increased Wellbeing</button><button type="button" class="select-btn" data-value="Community Connection"><span class="material-icons">groups</span>Community Connection</button><button type="button" class="select-btn" data-value="Skill Development"><span class="material-icons">construction</span>Skill Development</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom benefit..."><button type="button" class="btn-add-option">Add</button></div></div></div></div>
+                <div class="section-header"><span class="material-icons">flag</span><h2>What Do You Want to Achieve?</h2><span class="section-badge">Step 2</span></div>
+                <div class="option-cards"><div class="option-card" data-goal="create-story"><span class="material-icons option-card-icon">auto_stories</span><h3 class="option-card-title">Write Bid Narrative</h3><p class="option-card-description">Turn data into compelling stories</p></div><div class="option-card" data-goal="find-data"><span class="material-icons option-card-icon">search</span><h3 class="option-card-title">Find Open Data</h3><p class="option-card-description">Discover relevant datasets for your cause</p></div><div class="option-card" data-goal="validate-data"><span class="material-icons option-card-icon">fact_check</span><h3 class="option-card-title">Analyse & Validate</h3><p class="option-card-description">Get insights from your existing data</p></div></div>
+                <div id="dynamicSection" class="mt-4" style="display: none;"></div>
+                <div class="text-center mt-5"><button type="button" id="generateBtn" class="btn btn-primary"><span class="material-icons">auto_awesome</span>Generate & Run Workflow</button></div>
+                <div id="statusMessage" class="status-message"></div>
+            </form>
+        </div>
+        <div id="outputSection" class="output-section">
+            <div id="llmResponseContainer" style="display: none;"><div class="output-header"><span class="material-icons">psychology</span><h3>Live Response from Workflow</h3></div><div class="loading-indicator"><div class="loading-dots"><div></div><div></div><div></div></div><p style="margin-top: 15px;">Waiting for response from workflow...</p></div><div id="llmResponseDisplay"></div></div>
+            <div class="prompt-display-wrapper"><div class="output-header"><span class="material-icons">description</span><h3>Your Generated Prompt (Reference)</h3></div><div style="position: relative;"><pre id="promptDisplay" class="prompt-display"></pre><button id="copyBtn" class="copy-btn"><span class="material-icons">content_copy</span> Copy</button></div></div>
+            <div class="text-center" style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;"><button type="button" id="resetBtn" class="btn btn-heart"><span class="material-icons">refresh</span>Start Over</button></div>
+            <div class="accordion-item"><button type="button" class="accordion-button"><span class="material-icons">expand_more</span>Important: Using Your Prompt Responsibly</button><div class="accordion-content"><div class="accordion-body"><p><strong>Think of this as a starting point, not a final answer.</strong> LLMs are powerful but require critical oversight.</p><ul><li><strong>Verify All Factual Claims:</strong> LLMs can "hallucinate" or invent data. Always cross-reference facts with trusted sources before including them in a bid.</li><li><strong>Iterate and Refine:</strong> Your first response is rarely the best. Ask follow-up questions to refine the output.</li><li><strong>You Are the Expert:</strong> Add your authentic voice and specific case studies. Ensure the final text reflects your organisation's values.</li></ul><p><strong>Recommended LLMs:</strong> <a href="https://gemini.google.com/" target="_blank" rel="noopener">Google Gemini</a>, <a href="https://chat.openai.com/" target="_blank" rel="noopener">OpenAI ChatGPT</a>, <a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Anthropic Claude</a>.</p></div></div></div>
+        </div>
+    </div>
+    <template id="template-create-story"><div class="section-header"><span class="material-icons">create</span><h2>Story Details</h2><span class="section-badge">Step 3</span></div><div class="form-group"><label class="form-label" for="keyFinding"><span class="material-icons">insights</span>Key Finding or Statistic</label><div class="input-wrapper"><span class="material-icons input-icon">trending_up</span><input type="text" class="form-control" id="keyFinding" placeholder="e.g., Youth unemployment rose 15% in our area last year" required></div></div><div class="form-group"><label class="form-label" for="solution"><span class="material-icons">lightbulb</span>Proposed Project or Solution</label><div class="input-wrapper"><span class="material-icons input-icon">build_circle</span><input type="text" class="form-control" id="solution" placeholder="e.g., A 12-week digital skills programme for 50 local youths" required></div></div><div class="form-group"><label class="form-label"><span class="material-icons">people</span>Target Funder</label><div class="multi-select-group" data-group="audience"><button type="button" class="select-btn" data-value="Local Council"><span class="material-icons">account_balance</span>Local Council</button><button type="button" class="select-btn" data-value="Community Foundation"><span class="material-icons">foundation</span>Community Foundation</button><button type="button" class="select-btn" data-value="Corporate Sponsor"><span class="material-icons">business</span>Corporate Sponsor</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom funder..."><button type="button" class="btn-add-option">Add</button></div></div></div></template>
+    <template id="template-find-data"><div class="section-header"><span class="material-icons">search</span><h2>Data Search Criteria</h2><span class="section-badge">Step 3</span></div><div class="form-group"><label class="form-label" for="cause"><span class="material-icons">favorite</span>Your Cause or Mission</label><div class="input-wrapper"><span class="material-icons input-icon">flag</span><input type="text" class="form-control" id="cause" placeholder="e.g., Reducing youth unemployment" required></div></div><div class="form-group"><label class="form-label" for="area"><span class="material-icons">location_on</span>Geographic Area</label><div class="input-wrapper"><span class="material-icons input-icon">map</span><input type="text" class="form-control" id="area" placeholder="e.g., Burnley, Lancashire" required></div></div><div class="form-group"><label class="form-label"><span class="material-icons">storage</span>Types of Data Needed</label><div class="multi-select-group" data-group="dataTypes"><button type="button" class="select-btn" data-value="Demographics"><span class="material-icons">group</span>Demographics</button><button type="button" class="select-btn" data-value="Economic"><span class="material-icons">trending_up</span>Economic</button><button type="button" class="select-btn" data-value="Health"><span class="material-icons">health_and_safety</span>Health</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom data type..."><button type="button" class="btn-add-option">Add</button></div></div></div></template>
+    <template id="template-validate-data"><div class="section-header"><span class="material-icons">fact_check</span><h2>Data Analysis Goals</h2><span class="section-badge">Step 3</span></div><div class="form-group"><label class="form-label" for="dataSource"><span class="material-icons">description</span>Describe Your Data Source</label><div class="input-wrapper"><span class="material-icons input-icon">source</span><textarea class="form-control" id="dataSource" placeholder="e.g., An Excel sheet of our service users from the last 2 years" required></textarea></div></div><div class="form-group"><label class="form-label"><span class="material-icons">checklist</span>What to Achieve</label><div class="multi-select-group" data-group="validationGoals"><button type="button" class="select-btn" data-value="Identify Trends"><span class="material-icons">show_chart</span>Identify Trends</button><button type="button" class="select-btn" data-value="Find Correlations"><span class="material-icons">scatter_plot</span>Find Correlations</button><button type="button" class="select-btn" data-value="Validate Assumptions"><span class="material-icons">verified</span>Validate Assumptions</button><button type="button" class="select-btn" data-value="Understand User Demographics"><span class="material-icons">pie_chart</span>Understand User Demographics</button><button type="button" class="select-btn" data-value="Measure Project Impact"><span class="material-icons">flag</span>Measure Project Impact</button><button type="button" class="select-btn" data-value="Forecast Future Need"><span class="material-icons">trending_up</span>Forecast Future Need</button><button type="button" class="select-btn-other">+ Other</button><div class="other-input-wrapper" style="display: none;"><input type="text" placeholder="Add custom goal..."><button type="button" class="btn-add-option">Add</button></div></div></div></template>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const quickStartTemplates = [
+            { icon: 'child_care', title: 'Youth Services', data: { charityName: 'Burnley Youth Zone', charityType: 'cic', description: 'We provide a safe and engaging space for young people aged 13-19, offering skills training and positive activities.', website: 'https://burnleyyouth.org.uk', ageGroups: ['Teenagers (13-17)', 'Young Adults (18-25)'], benefits: ['Skill Development', 'Community Connection', 'Gaining Employment'], 'create-story': { keyFinding: '1 in 5 young people in our area are not in education, employment or training (NEET).', solution: 'Launch a 12-week digital skills and employability programme for 50 local youths.', audience: ['Local Council', 'Community Foundation'] }, 'find-data': { cause: 'Youth unemployment and skills gap', area: 'Burnley, Lancashire', dataTypes: ['Demographics', 'Economic'] }, 'validate-data': { dataSource: 'Local council report on youth employment figures from last year.', validationGoals: ['Identify Trends', 'Validate Assumptions'] }}},
+            { icon: 'food_bank', title: 'Food Bank', data: { charityName: 'The Community Pantry Project', charityType: 'registered-charity', description: 'We provide emergency food parcels and support to individuals and families facing financial hardship in our community.', website: '', ageGroups: ['Children (5-12)', 'Adults (26-64)'], benefits: ['Financial Stability', 'Improved Health', 'Increased Wellbeing'], 'create-story': { keyFinding: 'Use of our food bank has increased by 40% in the last 12 months, with families being the largest group.', solution: 'Secure funding to increase our stock capacity and extend opening hours to weekends.', audience: ['Community Foundation', 'Corporate Sponsor'] }, 'find-data': { cause: 'Food poverty and cost of living crisis', area: 'East Lancashire', dataTypes: ['Economic', 'Health'] }, 'validate-data': { dataSource: 'Our internal service user records (Excel spreadsheet) from the past two years.', validationGoals: ['Identify Trends', 'Find Correlations'] }}},
+            { icon: 'elderly', title: 'Elderly Support', data: { charityName: 'Burnley Befrienders', charityType: 'voluntary-organisation', description: 'Our organisation combats loneliness and social isolation among older residents through volunteer befriending and social events.', website: 'https://burnleybefrienders.co.uk', ageGroups: ['Seniors (65+)'], benefits: ['Community Connection', 'Increased Wellbeing', 'Improved Health'], 'create-story': { keyFinding: 'Over 30% of over-75s in our town report feeling lonely often or always, according to local surveys.', solution: 'Expand our befriending service to match 100 isolated seniors with weekly volunteers.', audience: ['Community Foundation', 'The National Lottery Community Fund'] }, 'find-data': { cause: 'Social isolation among the elderly', area: 'Burnley Town Centre', dataTypes: ['Demographics', 'Health'] }, 'validate-data': { dataSource: 'Feedback forms and attendance logs from our weekly coffee morning events.', validationGoals: ['Identify Trends', 'Measure Project Impact'] }}},
+            { icon: 'eco', title: 'Environment', data: { charityName: 'Pennine Green Futures', charityType: 'social-enterprise', description: 'We empower local communities to take action on climate change through educational workshops and practical greening projects.', website: 'https://penninegreen.org.uk', ageGroups: ['Children (5-12)', 'Adults (26-64)'], benefits: ['Skill Development', 'Community Connection'], 'create-story': { keyFinding: 'Our town has 20% less public green space per capita than the national average.', solution: 'Transform a disused 2-acre plot into a community garden and biodiversity hub.', audience: ['Local Council', 'Corporate Sponsor'] }, 'find-data': { cause: 'Urban green space and biodiversity', area: 'Burnley and Pendle', dataTypes: ['Health', 'Environment'] }, 'validate-data': { dataSource: 'DEFRA open data on air quality monitoring stations in our postcode.', validationGoals: ['Identify Trends', 'Forecast Future Need'] }}},
+            { icon: 'palette', title: 'Community Arts', data: { charityName: 'Weavers Triangle Arts', charityType: 'cic', description: 'We make art accessible to everyone by providing free creative workshops and cultural events in underserved neighbourhoods.', website: 'https://weaverstrianglearts.co.uk', ageGroups: ['Children (5-12)', 'Seniors (65+)'], benefits: ['Increased Wellbeing', 'Community Connection', 'Skill Development'], 'create-story': { keyFinding: 'Our town has fewer free cultural activities for families than any other borough in Lancashire.', solution: 'Run a series of 10 free weekend art workshops in public spaces, culminating in a community exhibition.', audience: ['Arts Council', 'Corporate Sponsor'] }, 'find-data': { cause: 'Access to arts and culture for low-income families', area: 'Burnley', dataTypes: ['Demographics', 'Cultural participation stats'] }, 'validate-data': { dataSource: 'Visitor numbers and postcode data from our previous ticketed events.', validationGoals: ['Understand User Demographics', 'Identify Trends'] }}},
+            { icon: 'accessible', title: 'Disability Access', data: { charityName: 'Access for All Lancs', charityType: 'registered-charity', description: 'We campaign for and provide resources to improve accessibility for disabled people across Lancashire.', website: 'https://accesslanc.org.uk', ageGroups: ['Adults (26-64)', 'Seniors (65+)'], benefits: ['Community Connection', 'Increased Wellbeing'], 'create-story': { keyFinding: 'An audit of 50 local shops and cafes found only 15% were fully wheelchair accessible.', solution: 'Launch an awareness campaign and provide grants of up to £500 for small businesses to install ramps and accessible toilets.', audience: ['Local Council', 'Disability charities'] }, 'find-data': { cause: 'Physical accessibility in public spaces for disabled people', area: 'Lancashire', dataTypes: ['Demographics', 'Business listings'] }, 'validate-data': { dataSource: 'A survey of 100 local disabled residents about barriers they face.', validationGoals: ['Find Correlations', 'Validate Assumptions'] }}}
+        ];
+        const appState = { currentStep: 1, selectedGoal: null, formData: {}, prepopulatedData: null };
+        const quickStartContainer = document.getElementById('quickStartContainer');
+        const form = document.getElementById('charityForm');
+        const dynamicSection = document.getElementById('dynamicSection');
+        const outputSection = document.getElementById('outputSection');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const statusMessageEl = document.getElementById('statusMessage');
+        const promptDisplay = document.getElementById('promptDisplay');
+        const llmResponseContainer = document.getElementById('llmResponseContainer');
+        const llmResponseDisplay = document.getElementById('llmResponseDisplay');
+
+        document.getElementById('toggleOptionalDetails').addEventListener('change', function() { document.getElementById('optionalDetailsContainer').classList.toggle('show', this.checked); });
+        document.body.addEventListener('click', handleDelegatedClicks);
+        generateBtn.addEventListener('click', handleGenerateAndRun);
+        copyBtn.addEventListener('click', copyPrompt);
+        resetBtn.addEventListener('click', () => { if (confirm('Are you sure you want to start over?')) resetApp(); });
+
+        renderMiniCards();
+
+        function handleDelegatedClicks(e) {
+            const el = e.target;
+            if (el.classList.contains('select-btn')) el.classList.toggle('active');
+            if (el.closest('.mini-card')) applyTemplate(parseInt(el.closest('.mini-card').dataset.index, 10));
+            if (el.closest('.option-card')) handleGoalSelection(el.closest('.option-card'));
+            if (el.closest('.accordion-button')) toggleAccordion(el.closest('.accordion-button'));
+            if (el.classList.contains('select-btn-other')) { const wrapper = el.nextElementSibling; if(wrapper) wrapper.style.display = wrapper.style.display === 'none' ? 'flex' : 'none'; }
+            if (el.classList.contains('btn-add-option')) {
+                const wrapper = el.parentElement;
+                const input = wrapper.querySelector('input');
+                if (input && input.value.trim()) {
+                    const group = wrapper.parentElement;
+                    const newBtn = document.createElement('button');
+                    newBtn.type = 'button'; newBtn.className = 'select-btn active custom-option';
+                    newBtn.dataset.value = input.value.trim();
+                    newBtn.innerHTML = `<span class="material-icons">push_pin</span> ${input.value.trim()}`;
+                    group.insertBefore(newBtn, group.querySelector('.select-btn-other'));
+                    input.value = '';
+                }
+            }
+        }
+        
+        async function handleGenerateAndRun() {
+            if (!appState.selectedGoal) { showStatus('error', 'Please select a goal in Step 2.'); return; }
+            collectFormData();
+            const promptText = generatePromptText();
+            promptDisplay.textContent = promptText;
+            outputSection.classList.add('show');
+            updateProgressStep(4);
+            await executeWorkflow(promptText);
+        }
+        
+        async function executeWorkflow(promptText) {
+            llmResponseContainer.style.display = 'block';
+            llmResponseDisplay.innerHTML = '';
+            llmResponseDisplay.style.color = '';
+            llmResponseContainer.querySelector('.loading-indicator').style.display = 'flex';
+            generateBtn.disabled = true;
+            const spinner = document.createElement('span'); spinner.className = 'loading-spinner';
+            generateBtn.prepend(spinner);
+            
+            const webhookUrl = 'https://web.openerpsolutions.co.uk/webhook/2719fbe3-2913-46e9-80ab-1162a5a37e7b';
+            
+            try {
+                const response = await fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: promptText, inputs: appState.formData }) });
+                const responseText = await response.text(); 
+                
+                if (!response.ok) { throw new Error(`Webhook Error: ${response.status} ${response.statusText}. Response: ${responseText}`); }
+
+                llmResponseContainer.querySelector('.loading-indicator').style.display = 'none';
+                llmResponseDisplay.innerHTML = responseText; 
+                
+            } catch (error) {
+                llmResponseContainer.querySelector('.loading-indicator').style.display = 'none';
+                const errorMessage = `An error occurred while contacting the workflow.\n\nDetails: ${error.message}\n\nPlease check your n8n workflow to ensure it is active and configured to return a valid HTML response.`;
+                llmResponseDisplay.textContent = errorMessage; 
+                llmResponseDisplay.style.color = '#ef4444';
+            } finally {
+                generateBtn.disabled = false;
+                spinner.remove();
+            }
+        }
+
+        function collectFormData() {
+            const getMultiSelectValues = g => Array.from(document.querySelectorAll(`[data-group="${g}"] .select-btn.active`)).map(b => b.dataset.value);
+            appState.formData = { 
+                charity: { name: form.charityName.value, type: form.charityType.options[form.charityType.selectedIndex].text.replace(/[^a-zA-Z\s\-()]/g, '').trim(), website: form.website.value, description: form.description.value, ageGroups: getMultiSelectValues('ageGroups'), benefits: getMultiSelectValues('benefits') }, 
+                goal: appState.selectedGoal, 
+                goalDetails: {} 
+            };
+            switch(appState.selectedGoal) {
+                case 'create-story': appState.formData.goalDetails = { keyFinding: form.keyFinding.value, solution: form.solution.value, audience: getMultiSelectValues('audience') }; break;
+                case 'find-data': appState.formData.goalDetails = { cause: form.cause.value, area: form.area.value, dataTypes: getMultiSelectValues('dataTypes') }; break;
+                case 'validate-data': appState.formData.goalDetails = { dataSource: form.dataSource.value, validationGoals: getMultiSelectValues('validationGoals') }; break;
+            }
+        }
+
+        function generatePromptText() {
+            const { charity, goal, goalDetails } = appState.formData;
+            const personas = { 'create-story': ["expert charity bid writer", "seasoned grant application specialist"], 'find-data': ["data scientist specialising in social impact", "researcher for third-sector organisations"], 'validate-data': ["data analyst for a community organisation", "social impact data strategist"] };
+            const randomElement = arr => arr[Math.floor(Math.random() * arr.length)];
+            let prompt = `Persona: Act as an ${randomElement(personas[goal])}.\n\nContext: You are assisting a UK-based **${charity.type || 'organisation'}** called **"${charity.name}"**. Today's date is ${new Date().toLocaleDateString('en-GB')}.\n\n`;
+            let profileSection = '';
+            if (charity.description) profileSection += `- Mission: ${charity.description}\n`;
+            if (charity.website) profileSection += `- Website: ${charity.website}\n`;
+            if (charity.ageGroups.length) profileSection += `- Primary Age Groups Served: ${charity.ageGroups.join(', ')}\n`;
+            if (charity.benefits.length) profileSection += `- Key Beneficiary Outcomes: ${charity.benefits.join(', ')}\n`;
+            if (profileSection) prompt += `Organisation Profile:\n${profileSection}\n`;
+            switch(goal) {
+                case 'create-story': prompt += `Task: Write a compelling funding bid narrative.\n\nKey Details:\n- The core issue, supported by data: "${goalDetails.keyFinding}"\n- The proposed solution: "${goalDetails.solution}"\n- The primary audience for this document: ${goalDetails.audience.join(', ')}\n\nPlease structure the response with clear headings (e.g., "The Need in Our Community", "Our Proposed Solution", "Expected Outcomes"). Ensure the tone is professional yet passionate. Focus on the 'why' behind the data and the tangible, human impact of the proposed solution, keeping the organisation's profile in mind. Conclude with a powerful call to action tailored to the funders.`; break;
+                case 'find-data': prompt += `Task: Identify relevant, publicly available UK datasets to support a funding bid.\n\nKey Details:\n- Thematic Area/Cause: "${goalDetails.cause}"\n- Geographic Focus: "${goalDetails.area}"\n- Required Data Categories: ${goalDetails.dataTypes.join(', ')}\n\nPlease provide a detailed list that includes:\n1. The name of the dataset and its official source (e.g., ONS, data.gov.uk, Police.uk, local council data portals).\n2. A direct, clickable link to each source.\n3. A brief summary of what the data contains and its direct relevance to the stated cause and area.\n4. A suggestion for one key insight that could likely be derived from each dataset for a bid.`; break;
+                case 'validate-data': prompt += `Task: Create a simple, step-by-step data analysis plan for a non-technical user.\n\nKey Details:\n- Data Source Provided: "${goalDetails.dataSource}"\n- Primary Analysis Goals: ${goalDetails.validationGoals.join(', ')}\n\nPlease provide a clear action plan that a charity worker could follow using basic tools like Microsoft Excel or Google Sheets. The plan should include:\n1. Initial Data Cleaning Steps: What to look for (e.g., missing values, inconsistencies).\n2. Analysis Questions: 3-5 key questions the data could answer to achieve the goals.\n3. Analysis Techniques: Specific, simple techniques (e.g., "Use a Pivot Table to count...", "Create a line chart to show...").\n4. How to present the findings for maximum impact in a funding application.`; break;
+            }
+            return prompt;
+        }
+        
+        function resetApp() {
+            appState.currentStep = 1; appState.selectedGoal = null; appState.formData = {}; appState.prepopulatedData = null;
+            form.reset();
+            document.getElementById('toggleOptionalDetails').checked = false; document.getElementById('optionalDetailsContainer').classList.remove('show');
+            document.querySelectorAll('.select-btn.active, .option-card.selected, .mini-card.selected').forEach(el => el.classList.remove('active', 'selected'));
+            document.querySelectorAll('.custom-option').forEach(el => el.remove());
+            document.querySelectorAll('.other-input-wrapper').forEach(el => el.style.display = 'none');
+            dynamicSection.innerHTML = ''; dynamicSection.style.display = 'none';
+            outputSection.classList.remove('show');
+            llmResponseContainer.style.display = 'none'; llmResponseDisplay.innerHTML = ''; llmResponseDisplay.style.color = '';
+            generateBtn.disabled = false;
+            const existingSpinner = generateBtn.querySelector('.loading-spinner');
+            if (existingSpinner) existingSpinner.remove();
+            updateProgressStep(1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function applyTemplate(index) {
+            const t = quickStartTemplates[index]; if (!t) return;
+            form.charityName.value = t.data.charityName; form.charityType.value = t.data.charityType; form.website.value = t.data.website || ''; form.description.value = t.data.description || '';
+            const toggle = document.getElementById('toggleOptionalDetails');
+            const showOptional = !!(t.data.website || t.data.description || t.data.ageGroups?.length || t.data.benefits?.length);
+            toggle.checked = showOptional; document.getElementById('optionalDetailsContainer').classList.toggle('show', showOptional);
+            document.querySelectorAll('[data-group]').forEach(group => {
+                group.querySelectorAll('.select-btn.active').forEach(btn => btn.classList.remove('active'));
+                const groupName = group.dataset.group;
+                if(t.data[groupName] && Array.isArray(t.data[groupName])) { t.data[groupName].forEach(val => { const btn = group.querySelector(`[data-value="${val}"]`); if (btn) btn.classList.add('active'); }); }
+            });
+            appState.prepopulatedData = t.data;
+            document.querySelectorAll('.mini-card').forEach(c => c.classList.remove('selected'));
+            quickStartContainer.children[index].classList.add('selected');
+            showStatus('success', `"${t.title}" template applied!`);
+            if(appState.selectedGoal) handleGoalSelection(document.querySelector(`.option-card[data-goal="${appState.selectedGoal}"]`));
+        }
+        function handleGoalSelection(card) {
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected'); appState.selectedGoal = card.dataset.goal;
+            renderDynamicSection(appState.selectedGoal); updateProgressStep(3);
+            if (appState.prepopulatedData && appState.prepopulatedData[appState.selectedGoal]) {
+                const data = appState.prepopulatedData[appState.selectedGoal];
+                Object.keys(data).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) el.value = data[key];
+                    else if (Array.isArray(data[key])) {
+                        const group = document.querySelector(`[data-group="${key}"]`);
+                        if(group) data[key].forEach(val => { const btn = group.querySelector(`[data-value="${val}"]`); if(btn) btn.classList.add('active'); });
+                    }
+                });
+            }
+        }
+        function renderMiniCards() { quickStartTemplates.forEach((t, i) => { const c = document.createElement('div'); c.className = 'mini-card'; c.dataset.index = i; c.innerHTML = `<span class="material-icons">${t.icon}</span><div class="mini-card-title">${t.title}</div>`; quickStartContainer.appendChild(c); }); }
+        function toggleAccordion(button) { const content = button.nextElementSibling; button.classList.toggle('active'); content.classList.toggle('active'); }
+        function renderDynamicSection(goal) { const t = document.getElementById(`template-${goal}`); if (!t) return; dynamicSection.innerHTML = ''; dynamicSection.appendChild(t.content.cloneNode(true)); dynamicSection.style.display = 'block';}
+        function updateProgressStep(step) { appState.currentStep = step; document.querySelectorAll('.progress-step').forEach(s => { const stepNum = parseInt(s.dataset.step, 10); s.classList.remove('active', 'completed'); if (stepNum < step) s.classList.add('completed'); else if (stepNum === step) s.classList.add('active'); }); }
+        function copyPrompt() { navigator.clipboard.writeText(promptDisplay.textContent).then(() => showStatus('success', 'Prompt copied! 📋')); }
+        function showStatus(type, message) { statusMessageEl.className = `status-message ${type} show`; statusMessageEl.innerHTML = `<span class="material-icons">${type === 'success' ? 'check_circle' : 'error'}</span> ${message}`; setTimeout(() => statusMessageEl.classList.remove('show'), 4000); }
+    });
+    </script>
+</body>
+</html>
